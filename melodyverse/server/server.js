@@ -14,7 +14,11 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*', // Allow all for now to debug, can restrict later
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Routes
@@ -22,6 +26,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/music', musicRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/public', publicRoutes);
+
+// Fallback routes for misconfigured frontends
+app.use('/auth', authRoutes);
+app.use('/music', musicRoutes);
+app.use('/admin', adminRoutes);
+app.use('/public', publicRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
