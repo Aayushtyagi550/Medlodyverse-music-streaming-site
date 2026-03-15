@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { FiPlay, FiPause, FiSkipBack, FiSkipForward, FiVolume2, FiVolumeX, FiX, FiDownload } from 'react-icons/fi';
+import { FiPlay, FiPause, FiSkipBack, FiSkipForward, FiVolume2, FiVolumeX, FiX, FiDownload, FiTv, FiMaximize, FiAirplay, FiSettings, FiSquare } from 'react-icons/fi';
 import { useMusic } from '../context/MusicContext';
 
 const MusicPlayer = () => {
     const {
         currentVideo, isPlaying, queue, queueIndex,
         playNext, playPrev, togglePlay, closePlayer,
-        volume, setVolume, setIsPlaying, setProgress, setDuration, progress, duration
+        volume, setVolume, setIsPlaying, setProgress, setDuration, progress, duration,
+        showVideo, setShowVideo, isTheaterMode, setIsTheaterMode
     } = useMusic();
 
     const playerRef = useRef(null);
@@ -15,6 +16,10 @@ const MusicPlayer = () => {
     const [currentTime, setCurrentTime] = useState(0);
     const [totalTime, setTotalTime] = useState(0);
     const progressInterval = useRef(null);
+    const [videoSize, setVideoSize] = useState({ width: 320, height: 180 });
+    const isResizing = useRef(false);
+    const [showQualityMenu, setShowQualityMenu] = useState(false);
+    const [quality, setQuality] = useState('auto');
 
     // Load YouTube IFrame API
     useEffect(() => {
@@ -48,16 +53,17 @@ const MusicPlayer = () => {
 
         const initPlayer = () => {
             const player = new window.YT.Player('yt-player', {
-                height: '1',
-                width: '1',
+                height: '100%',
+                width: '100%',
                 videoId: currentVideo.videoId,
                 playerVars: {
                     autoplay: 1,
                     controls: 0,
                     disablekb: 1,
-                    fs: 0,
+                    fs: 1,
                     modestbranding: 1,
                     rel: 0,
+                    origin: window.location.origin
                 },
                 events: {
                     onReady: (event) => {
@@ -148,13 +154,96 @@ const MusicPlayer = () => {
         }
     };
 
+    const changeQuality = (level) => {
+        if (ytPlayer) {
+            try {
+                ytPlayer.setPlaybackQuality(level);
+                setQuality(level);
+                setShowQualityMenu(false);
+            } catch (e) { }
+        }
+    };
+
+    // Resizing Logic
+    const startResize = (e) => {
+        e.preventDefault();
+        isResizing.current = true;
+        document.body.style.cursor = 'nwse-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', handleResize);
+        document.addEventListener('mouseup', stopResize);
+    };
+
+    const handleResize = (e) => {
+        if (!isResizing.current) return;
+        const minWidth = 200;
+        const maxWidth = 800;
+        const rect = document.querySelector('.youtube-embed-container').getBoundingClientRect();
+        
+        // Use mouse position relative to the container for resizing
+        // Since it's fixed at bottom-right, moving mouse left/up increases size
+        const newWidth = Math.max(minWidth, Math.min(maxWidth, rect.right - e.clientX));
+        const newHeight = newWidth * (9 / 16);
+        
+        setVideoSize({ width: newWidth, height: newHeight });
+    };
+
+    const stopResize = () => {
+        isResizing.current = false;
+        document.body.style.cursor = 'default';
+        document.body.style.userSelect = 'auto';
+        document.removeEventListener('mousemove', handleResize);
+        document.removeEventListener('mouseup', stopResize);
+    };
+
+    useEffect(() => {
+        return () => {
+            document.removeEventListener('mousemove', handleResize);
+            document.removeEventListener('mouseup', stopResize);
+        };
+    }, []);
+
     if (!currentVideo) return null;
 
     return (
         <div className="music-player">
-            {/* Hidden YouTube Player */}
-            <div className="youtube-embed-container">
+            {/* YouTube Player Container */}
+            <div 
+                className={`youtube-embed-container ${showVideo ? 'show-video' : 'hide-video'} ${isTheaterMode ? 'theater-mode' : ''}`}
+                style={!isTheaterMode ? { width: `${videoSize.width}px`, height: `${videoSize.height}px` } : {}}
+            >
                 <div id="yt-player"></div>
+                {showVideo && (
+                    <>
+                        <button className="video-close-btn" onClick={() => setShowVideo(false)}>
+                            <FiX />
+                        </button>
+                        <div className="video-controls-top">
+                            <div className="quality-menu-container">
+                                <button className={`video-control-btn ${showQualityMenu ? 'active' : ''}`} onClick={() => setShowQualityMenu(!showQualityMenu)} title="Quality Settings">
+                                    <FiSettings />
+                                </button>
+                                {showQualityMenu && (
+                                    <div className="quality-dropdown">
+                                        <div className="quality-title">Quality</div>
+                                        {['hd1080', 'hd720', 'large', 'medium', 'small', 'auto'].map(q => (
+                                            <button key={q} className={`quality-item ${quality === q ? 'active' : ''}`} onClick={() => changeQuality(q)}>
+                                                {q === 'hd1080' ? '1080p HD' : q === 'hd720' ? '720p HD' : q === 'large' ? '480p' : q === 'medium' ? '360p' : q === 'small' ? '240p' : 'Auto'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <button className="video-control-btn" onClick={() => setIsTheaterMode(!isTheaterMode)} title="Theater Mode">
+                                <FiAirplay />
+                            </button>
+                            <button className="video-control-btn" onClick={() => document.getElementById('yt-player').requestFullscreen()} title="Fullscreen">
+                                <FiMaximize />
+                            </button>
+                        </div>
+                        {!isTheaterMode && <div className="video-resize-handle" onMouseDown={startResize} title="Drag to Resize"></div>}
+                    </>
+                )}
             </div>
 
             {/* Track Info */}
@@ -194,6 +283,12 @@ const MusicPlayer = () => {
 
             {/* Extra Controls */}
             <div className="player-extra">
+                <button className={`player-btn ${showVideo ? 'active' : ''}`} onClick={() => setShowVideo(!showVideo)} title="Toggle Video">
+                    <FiTv />
+                </button>
+                <button className="player-btn" onClick={closePlayer} title="Stop & Close Player">
+                    <FiSquare />
+                </button>
                 <button className="player-btn" onClick={handleDownload} title="Open in YouTube">
                     <FiDownload />
                 </button>

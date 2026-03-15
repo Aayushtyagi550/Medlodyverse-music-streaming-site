@@ -47,30 +47,20 @@ const SongCard = ({ song, songList = [], animDelay = 0 }) => {
             style={{ animationDelay: `${animDelay * 0.05}s` }}
             onClick={handlePlay}
         >
-            <div className="song-thumb-container">
+            <div className="song-thumb-wrapper">
                 <img
-                    className="song-thumb"
+                    className="song-img"
                     src={song.thumbnail || `https://img.youtube.com/vi/${song.videoId}/mqdefault.jpg`}
                     alt={song.title}
                     loading="lazy"
                 />
-                <div className="song-play-overlay">
-                    <div className="song-play-circle">
-                        <FiPlay style={{ marginLeft: '2px' }} />
-                    </div>
+                <div className="song-play-btn-overlay">
+                    <FiPlay />
                 </div>
             </div>
-            <div className="song-info">
-                <div className="song-title">{song.title}</div>
-                <div className="song-channel">{song.channelTitle}</div>
-            </div>
-            <div className="song-actions">
-                <button className="song-action-btn" onClick={handleFavorite} title="Add to favorites">
-                    <FiHeart /> Like
-                </button>
-                <button className="song-action-btn" onClick={(e) => { e.stopPropagation(); handlePlay(); }} title="Play now">
-                    <FiPlay /> Play
-                </button>
+            <div className="song-card-details">
+                <div className="song-card-title">{song.title}</div>
+                <div className="song-card-artist">{song.channelTitle}</div>
             </div>
         </div>
     );

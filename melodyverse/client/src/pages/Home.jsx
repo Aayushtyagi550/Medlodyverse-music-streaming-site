@@ -4,26 +4,27 @@ import { FiPlay, FiChevronRight, FiChevronLeft, FiEye } from 'react-icons/fi';
 import SongCard from '../components/SongCard';
 import { getFeaturedArtists, getCategories, getTrending, searchMusic } from '../services/api';
 import { useMusic } from '../context/MusicContext';
+import { LEGENDARY_ARTISTS, INDIAN_LEGENDS, MODERN_STARS, INTERNATIONAL_ICONS } from '../constants/artists';
 
 const HERO_ARTISTS_LEFT = [
-    { name: 'Lata Mangeshkar', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Lata_Mangeshkar_%28cropped%29.jpg/440px-Lata_Mangeshkar_%28cropped%29.jpg' },
-    { name: 'Mukesh', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Mukesh_singer.jpg/440px-Mukesh_singer.jpg' },
-    { name: 'A.R. Rahman', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/A._R._Rahman_at_the_2019_Toronto_International_Film_Festival.jpg/440px-A._R._Rahman_at_the_2019_Toronto_International_Film_Festival.jpg' },
-    { name: 'Kishore Kumar', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Kishore_Kumar_in_1970s.jpg/440px-Kishore_Kumar_in_1970s.jpg' },
+    { name: 'Lata Mangeshkar', img: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Lata-Mangeshkar.jpg' },
+    { name: 'Mukesh', img: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Mukesh_Indian_Singer.jpg' },
+    { name: 'Kishore Kumar', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Kishore_Kumar_at_the_premiere_of_the_film_Abhimaan.jpg/800px-Kishore_Kumar_at_the_premiere_of_the_film_Abhimaan.jpg' },
+    { name: 'Mohammed Rafi', img: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Mohammed_Rafi_2016_postcard_of_India_crop-flip.jpg' },
 ];
 
 const HERO_ARTISTS_RIGHT = [
-    { name: 'Freddie Mercury', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg/440px-Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg' },
-    { name: 'Michael Jackson', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Michael_Jackson_in_1988.jpg/440px-Michael_Jackson_in_1988.jpg' },
-    { name: 'Beyoncé', img: 'https://ui-avatars.com/api/?name=Beyonce&background=fd79a8&color=fff&size=200' },
-    { name: 'Elvis Presley', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Elvis_Presley_promoting_Jailhouse_Rock.jpg/440px-Elvis_Presley_promoting_Jailhouse_Rock.jpg' },
+    { name: 'Freddie Mercury', img: 'https://upload.wikimedia.org/wikipedia/commons/e/ef/FreddieMercuryNov1977.jpg' },
+    { name: 'Michael Jackson', img: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Michael_Jackson%2C_1988_%2846845017052%29.jpg' },
+    { name: 'Arijit Singh', img: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Arijit_Singh.jpg' },
+    { name: 'The Weeknd', img: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/The_Weeknd_Portrait_by_Brian_Ziff.jpg' },
 ];
 
 const QUICK_PLAYS = [
-    { title: 'Lata Mangeshkar: Golden Hits', query: 'Lata Mangeshkar greatest hits', img: '/assets/artists/lata.png', views: '1.2M views' },
-    { title: 'Freddie Mercury: Live at Wembley', query: 'Queen Freddie Mercury live Wembley', img: '/assets/artists/freddie.png', views: '850K views' },
-    { title: 'Bollywood Classics Revisited', query: 'best old Bollywood songs 60s 70s 80s', img: '/assets/artists/bollywood.png', views: '2.4M views' },
-    { title: 'Icons of Pop Music', query: 'pop music icons greatest hits', img: '/assets/artists/pop.png', views: '3.1M views' },
+    { title: 'Lata Mangeshkar: Golden Hits', query: 'Lata Mangeshkar greatest hits', img: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Lata-Mangeshkar.jpg', views: '1.2M views' },
+    { title: 'Global Pop Icons', query: 'Michael Jackson Freddie Mercury greatest hits', img: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Michael_Jackson%2C_1988_%2846845017052%29.jpg', views: '3.1M views' },
+    { title: 'Bollywood Golden Era', query: 'classical bollywood singers 60s 70s', img: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Mohammed_Rafi_2016_postcard_of_India_crop-flip.jpg', views: '2.4M views' },
+    { title: 'Ed Sheeran: Modern Pop', query: 'Ed Sheeran best pop songs', img: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Ed_Sheeran-6886_%28cropped%29.jpg', views: '850K views' },
 ];
 
 const Home = () => {
@@ -46,7 +47,8 @@ const Home = () => {
                 getFeaturedArtists().catch(() => ({ data: { artists: [] } })),
                 getCategories().catch(() => ({ data: { categories: [] } })),
             ]);
-            setFeaturedArtists(artistsRes.data.artists || []);
+            const artists = artistsRes.data.artists || [];
+            setFeaturedArtists(artists.length > 0 ? artists : LEGENDARY_ARTISTS);
             setCategories(catsRes.data.categories || []);
             try {
                 const trendRes = await getTrending('IN');
@@ -59,6 +61,8 @@ const Home = () => {
             }
         } catch (error) {
             console.error('Failed to load home data:', error);
+            setFeaturedArtists(LEGENDARY_ARTISTS);
+            setCategories([]);
         } finally {
             setLoading(false);
         }
@@ -85,7 +89,7 @@ const Home = () => {
         <div className="home-fullwidth">
             {/* ===== PREMIUM HERO ===== */}
             <div className="fw-hero-premium" style={{
-                backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('/hero-bg.jpg')`,
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop')`,
             }}>
                 <div className="fw-hero-glow"></div>
 
@@ -94,9 +98,6 @@ const Home = () => {
                     <div className="fw-hero-actions">
                         <button className="premium-play-btn" onClick={() => navigate('/search')}>
                             <FiPlay /> START STREAMING
-                        </button>
-                        <button className="premium-outline-btn" onClick={() => navigate('/artists')}>
-                            VIEW ALL LEGENDS
                         </button>
                     </div>
                 </div>
@@ -158,27 +159,65 @@ const Home = () => {
                 </div>
             )}
 
-            {/* ===== ARTISTS SECTION ===== */}
-            {featuredArtists.length > 0 && (
-                <div className="fw-section">
-                    <div className="section-header">
-                        <h2 className="section-title"><span className="emoji">⭐</span> Legendary Artists</h2>
-                        <span className="section-link" onClick={() => navigate('/artists')}>View All <FiChevronRight /></span>
-                    </div>
-                    <div className="artists-grid">
-                        {featuredArtists.map((artist, i) => (
-                            <div key={artist._id} className="artist-card animate-in" style={{ animationDelay: `${i * 0.06}s` }} onClick={() => navigate(`/artist/${artist._id}`)}>
-                                <img className="artist-card-img" src={artist.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`} alt={artist.name} loading="lazy" onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`; }} />
-                                <div className="artist-card-overlay">
-                                    <div className="artist-card-name">{artist.name}</div>
-                                    <div className="artist-card-genre">{artist.genre?.slice(0, 2).join(' • ')}</div>
-                                </div>
-                                <button className="artist-play-btn"><FiPlay /></button>
-                            </div>
-                        ))}
-                    </div>
+            {/* ===== INDIAN LEGENDS SECTION ===== */}
+            <div className="fw-section">
+                <div className="section-header">
+                    <h2 className="section-title">
+                        <span className="emoji">⭐</span> Indian Musical Legends
+                    </h2>
                 </div>
-            )}
+                <div className="artists-grid">
+                    {(featuredArtists.length > 0 ? featuredArtists.filter(a => a.category === 'legend' || !a.category) : INDIAN_LEGENDS).slice(0, 6).map((artist, i) => (
+                        <div key={artist._id} className="artist-card animate-in" style={{ animationDelay: `${i * 0.06}s` }} onClick={() => navigate(`/artist/${artist._id || artist.name}`)}>
+                            <img className="artist-card-img" src={artist.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`} alt={artist.name} loading="lazy" onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`; }} />
+                            <div className="artist-card-overlay">
+                                <div className="artist-card-name">{artist.name}</div>
+                            </div>
+                            <button className="artist-play-btn"><FiPlay /></button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* ===== MODERN STARS SECTION ===== */}
+            <div className="fw-section">
+                <div className="section-header">
+                    <h2 className="section-title">
+                        <span className="emoji">✨</span> Modern Contemporary Stars
+                    </h2>
+                </div>
+                <div className="artists-grid">
+                    {MODERN_STARS.map((artist, i) => (
+                        <div key={artist._id} className="artist-card animate-in" style={{ animationDelay: `${i * 0.06 + 0.5}s` }} onClick={() => navigate(`/artist/${artist._id || artist.name}`)}>
+                            <img className="artist-card-img" src={artist.image} alt={artist.name} loading="lazy" onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`; }} />
+                            <div className="artist-card-overlay">
+                                <div className="artist-card-name">{artist.name}</div>
+                            </div>
+                            <button className="artist-play-btn"><FiPlay /></button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* ===== INTERNATIONAL ICONS SECTION ===== */}
+            <div className="fw-section">
+                <div className="section-header">
+                    <h2 className="section-title">
+                        <span className="emoji">🌍</span> International Icons
+                    </h2>
+                </div>
+                <div className="artists-grid">
+                    {INTERNATIONAL_ICONS.map((artist, i) => (
+                        <div key={artist._id} className="artist-card animate-in" style={{ animationDelay: `${i * 0.06 + 1.0}s` }} onClick={() => navigate(`/artist/${artist._id || artist.name}`)}>
+                            <img className="artist-card-img" src={artist.image} alt={artist.name} loading="lazy" onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`; }} />
+                            <div className="artist-card-overlay">
+                                <div className="artist-card-name">{artist.name}</div>
+                            </div>
+                            <button className="artist-play-btn"><FiPlay /></button>
+                        </div>
+                    ))}
+                </div>
+            </div>
 
             {/* ===== CATEGORIES ===== */}
             {categories.length > 0 && (
@@ -202,13 +241,12 @@ const Home = () => {
             {/* ===== BOTTOM FOOTER ===== */}
             <footer className="fw-footer">
                 <div className="fw-footer-links">
-                    <span onClick={() => navigate('/')}>Home Video</span>
-                    <span onClick={() => navigate('/search?q=genres music')}>Genres Music</span>
-                    <span onClick={() => navigate('/artists')}>Artists</span>
-                    <span onClick={() => navigate('/artists')}>Artists</span>
+                    <span onClick={() => navigate('/')}>Home</span>
+                    <span onClick={() => navigate('/search')}>Explore</span>
+                    <span onClick={() => navigate('/search?q=genres music')}>Genres</span>
                     <span>Contact Us</span>
                 </div>
-                <p className="fw-footer-copy">© 2024 MelodyVerse — Stream the Greatest Musical Legends ⭐</p>
+                <p className="fw-footer-copy">© 2024 MelodyVerse — Stream the Greatest Music ⭐</p>
             </footer>
         </div>
     );

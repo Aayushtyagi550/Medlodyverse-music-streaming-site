@@ -19,7 +19,7 @@ const AI_RESPONSES = {
 };
 
 const AIAssistant = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const { showAIAssistant: isOpen, setShowAIAssistant: setIsOpen, playVideo } = useMusic();
     const [messages, setMessages] = useState([
         { role: 'ai', text: AI_RESPONSES.greetings[0], timestamp: new Date() }
     ]);
@@ -29,7 +29,6 @@ const AIAssistant = () => {
     const messagesEndRef = useRef(null);
     const recognitionRef = useRef(null);
     const navigate = useNavigate();
-    const { playVideo } = useMusic();
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -194,14 +193,6 @@ const AIAssistant = () => {
 
     return (
         <>
-            {/* Floating AI Button */}
-            <button className="ai-fab" onClick={() => setIsOpen(!isOpen)}>
-                <div className={`ai-fab-inner ${isOpen ? 'active' : ''}`}>
-                    {isOpen ? <FiX /> : <FiMessageCircle />}
-                </div>
-                <div className="ai-fab-pulse"></div>
-            </button>
-
             {/* Chat Window */}
             {isOpen && (
                 <div className="ai-chat-window">

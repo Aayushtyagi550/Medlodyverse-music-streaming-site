@@ -36,7 +36,7 @@ const seedData = async () => {
                 era: '1940s-2020s',
                 featured: true,
                 searchQuery: 'Lata Mangeshkar best songs',
-                image: '/assets/artists/lata.png'
+                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Lata_Mangeshkar_2011.jpg/800px-Lata_Mangeshkar_2011.jpg'
             },
             {
                 name: 'Mukesh',
@@ -116,7 +116,7 @@ const seedData = async () => {
                 era: '1970s-1990s',
                 featured: true,
                 searchQuery: 'Freddie Mercury Queen best songs',
-                image: '/assets/artists/freddie.png'
+                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg/800px-Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg'
             },
             {
                 name: 'Michael Jackson',
@@ -154,9 +154,9 @@ const seedData = async () => {
                 genre: ['Bollywood', 'Pop', 'Dance'],
                 nationality: 'Indian',
                 era: '2010s-present',
-                featured: false,
+                featured: true,
                 searchQuery: 'Neha Kakkar hit songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Neha_Kakkar_at_Indian_Idol_11.jpg/440px-Neha_Kakkar_at_Indian_Idol_11.jpg'
+                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Neha_Kakkar_at_Indian_Idol_11.jpg/800px-Neha_Kakkar_at_Indian_Idol_11.jpg'
             },
             {
                 name: 'Atif Aslam',
@@ -164,9 +164,9 @@ const seedData = async () => {
                 genre: ['Bollywood', 'Pop', 'Rock'],
                 nationality: 'Pakistani',
                 era: '2000s-present',
-                featured: false,
+                featured: true,
                 searchQuery: 'Atif Aslam hit songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Atif_Aslam_at_Sur_Kshetra.jpg/440px-Atif_Aslam_at_Sur_Kshetra.jpg'
+                image: 'https://images.summitmedia-digital.com/cosmo/images/2021/09/27/atif-aslam-bollywood-songs-1632734125.jpg'
             },
             {
                 name: 'Ed Sheeran',
@@ -174,9 +174,9 @@ const seedData = async () => {
                 genre: ['Pop', 'Acoustic', 'Folk'],
                 nationality: 'British',
                 era: '2010s-present',
-                featured: false,
+                featured: true,
                 searchQuery: 'Ed Sheeran greatest hits',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Ed_Sheeran-6886_%28cropped%29.jpg/440px-Ed_Sheeran-6886_%28cropped%29.jpg'
+                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Ed_Sheeran-6886_%28cropped%29.jpg/800px-Ed_Sheeran-6886_%28cropped%29.jpg'
             },
             {
                 name: 'The Weeknd',
@@ -184,9 +184,9 @@ const seedData = async () => {
                 genre: ['R&B', 'Pop', 'Electronic'],
                 nationality: 'Canadian',
                 era: '2010s-present',
-                featured: false,
+                featured: true,
                 searchQuery: 'The Weeknd best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_with_hand_up.jpg/440px-The_Weeknd_with_hand_up.jpg'
+                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_with_hand_up.jpg/800px-The_Weeknd_with_hand_up.jpg'
             }
         ];
 

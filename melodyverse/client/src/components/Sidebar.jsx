@@ -1,98 +1,70 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import { FiHome, FiSearch, FiMusic, FiHeart, FiList, FiUsers, FiSettings, FiStar, FiRadio, FiHeadphones, FiClock, FiCamera } from 'react-icons/fi';
-import { useAuth } from '../context/AuthContext';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { FiHome, FiCompass, FiMusic, FiUsers, FiRadio, FiClock, FiHeart, FiFolder, FiPlusCircle, FiBarChart } from 'react-icons/fi';
 
 const Sidebar = () => {
-    const location = useLocation();
-    const { user } = useAuth();
+    const navigate = useNavigate();
 
-    const mainNav = [
-        { path: '/', icon: <FiHome />, label: 'Home' },
-        { path: '/search', icon: <FiSearch />, label: 'Explore' },
-        { path: '/artists', icon: <FiUsers />, label: 'Artists' },
+    const menuItems = [
+        { icon: <FiHome />, label: 'Home', to: '/' },
+        { icon: <FiCompass />, label: 'Explore', to: '/search' },
+        { icon: <FiMusic />, label: 'Album', to: '/search?q=albums' },
+        // { icon: <FiRadio />, label: 'Radio', to: '/radio' },
     ];
 
-    const libraryNav = [
-        { path: '/favorites', icon: <FiHeart />, label: 'Favorites' },
-        { path: '/playlists', icon: <FiList />, label: 'Playlists' },
-        { path: '/time-machine', icon: <FiClock />, label: 'Time Machine' },
+    const libraryItems = [
+        { icon: <FiClock />, label: 'Recents', to: '/search?q=recent' },
+        { icon: <FiHeart />, label: 'Favourites', to: '/favorites' },
+        { icon: <FiFolder />, label: 'Local', to: '/search?q=local' },
     ];
 
-    const genreLinks = [
-        { path: '/category/Bollywood', label: '🎬 Bollywood' },
-        { path: '/category/Indian Classical', label: '🎵 Classical' },
-        { path: '/category/Pop', label: '🎤 Pop' },
-        { path: '/category/Rock', label: '🎸 Rock' },
-        { path: '/category/Hip Hop', label: '🎧 Hip Hop' },
-        { path: '/category/Lo-Fi', label: '☕ Lo-Fi' },
-        { path: '/category/Sufi', label: '🌀 Sufi' },
-        { path: '/category/EDM', label: '🎛️ EDM' },
+    const playlistItems = [
+        { label: 'Hip-Hop', to: '/category/Hip%20Hop' },
+        { label: 'Classical', to: '/category/Classical' },
+        { label: 'Bollywood', to: '/category/Bollywood' },
     ];
 
     return (
         <aside className="sidebar">
-            <div className="sidebar-logo">
-                <div className="logo-icon">🎵</div>
-                <h1>MelodyVerse</h1>
+            <div className="sidebar-logo" onClick={() => navigate('/')}>
+                <div className="logo-icon-side">🎵</div>
+                <div className="logo-text-side">
+                    MELODY<span className="logo-accent">VERSE</span>
+                </div>
             </div>
 
-            <nav className="sidebar-nav">
-                <div className="nav-section">
-                    <div className="nav-section-title">Menu</div>
-                    {mainNav.map(item => (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                            end={item.path === '/'}
-                        >
-                            <span className="icon">{item.icon}</span>
-                            {item.label}
-                        </NavLink>
-                    ))}
-                </div>
+            <div className="sidebar-section">
+                <div className="sidebar-section-title">RECOMMEND</div>
+                {menuItems.map(item => (
+                    <NavLink key={item.to} to={item.to} className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}>
+                        <span className="sidebar-icon">{item.icon}</span>
+                        <span className="sidebar-label">{item.label}</span>
+                    </NavLink>
+                ))}
+            </div>
 
-                <div className="nav-section">
-                    <div className="nav-section-title">Your Library</div>
-                    {libraryNav.map(item => (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                        >
-                            <span className="icon">{item.icon}</span>
-                            {item.label}
-                        </NavLink>
-                    ))}
-                </div>
+            <div className="sidebar-section">
+                <div className="sidebar-section-title">LIBRARY</div>
+                {libraryItems.map(item => (
+                    <NavLink key={item.to} to={item.to} className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}>
+                        <span className="sidebar-icon">{item.icon}</span>
+                        <span className="sidebar-label">{item.label}</span>
+                    </NavLink>
+                ))}
+            </div>
 
-                <div className="nav-section">
-                    <div className="nav-section-title">Genres</div>
-                    {genreLinks.map(item => (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                        >
-                            <span className="icon" style={{ fontSize: '16px' }}>{item.label.split(' ')[0]}</span>
-                            {item.label.split(' ').slice(1).join(' ')}
-                        </NavLink>
-                    ))}
+            <div className="sidebar-section">
+                <div className="sidebar-section-title">PLAYLIST</div>
+                <div className="sidebar-item">
+                    <span className="sidebar-icon"><FiPlusCircle /></span>
+                    <span className="sidebar-label">Create New</span>
                 </div>
-
-                {user?.role === 'admin' && (
-                    <div className="nav-section">
-                        <div className="nav-section-title">Admin</div>
-                        <NavLink
-                            to="/admin"
-                            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                        >
-                            <span className="icon"><FiSettings /></span>
-                            Admin Panel
-                        </NavLink>
-                    </div>
-                )}
-            </nav>
+                {playlistItems.map(item => (
+                    <NavLink key={item.to} to={item.to} className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}>
+                        <span className="sidebar-icon"><FiBarChart /></span>
+                        <span className="sidebar-label">{item.label}</span>
+                    </NavLink>
+                ))}
+            </div>
         </aside>
     );
 };

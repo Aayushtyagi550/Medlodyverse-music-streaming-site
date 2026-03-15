@@ -10,6 +10,10 @@ export const MusicProvider = ({ children }) => {
     const [queue, setQueue] = useState([]);
     const [queueIndex, setQueueIndex] = useState(0);
     const [showPlayer, setShowPlayer] = useState(false);
+    const [showAIAssistant, setShowAIAssistant] = useState(false);
+    const [showMoodCamera, setShowMoodCamera] = useState(false);
+    const [showVideo, setShowVideo] = useState(false);
+    const [isTheaterMode, setIsTheaterMode] = useState(false);
     const [volume, setVolume] = useState(80);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -56,8 +60,10 @@ export const MusicProvider = ({ children }) => {
 
     return (
         <MusicContext.Provider value={{
-            currentVideo, isPlaying, queue, queueIndex, showPlayer, volume, progress, duration, playerRef,
-            playVideo, togglePlay, playNext, playPrev, closePlayer, setVolume, setProgress, setDuration, setIsPlaying
+            currentVideo, isPlaying, queue, queueIndex, showPlayer, 
+            showAIAssistant, setShowAIAssistant, showMoodCamera, setShowMoodCamera,
+            volume, progress, duration, playerRef, showVideo, isTheaterMode,
+            playVideo, togglePlay, playNext, playPrev, closePlayer, setVolume, setProgress, setDuration, setIsPlaying, setShowVideo, setIsTheaterMode
         }}>
             {children}
         </MusicContext.Provider>

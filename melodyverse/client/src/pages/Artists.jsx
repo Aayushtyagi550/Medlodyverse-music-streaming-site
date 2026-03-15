@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiPlay } from 'react-icons/fi';
 import { getArtists } from '../services/api';
+import { LEGENDARY_ARTISTS, INDIAN_LEGENDS, MODERN_STARS, INTERNATIONAL_ICONS } from '../constants/artists';
 
 const Artists = () => {
     const [artists, setArtists] = useState([]);
@@ -15,46 +16,58 @@ const Artists = () => {
     const loadArtists = async () => {
         try {
             const res = await getArtists();
-            setArtists(res.data.artists || []);
+            const artistsData = res.data.artists || [];
+            setArtists(artistsData.length > 0 ? artistsData : LEGENDARY_ARTISTS);
         } catch (error) {
             console.error('Failed to load artists:', error);
+            setArtists(LEGENDARY_ARTISTS);
         } finally {
             setLoading(false);
         }
     };
 
-    if (loading) return <div className="loader"><div className="spinner"></div></div>;
-
-    return (
-        <div>
-            <div className="search-results-header">
-                <h2>⭐ All Artists</h2>
-                <p>Legendary singers from India and around the world</p>
+    const renderArtistGrid = (items, title, emoji) => (
+        <div className="fw-section" style={{ padding: '40px 0' }}>
+            <div className="section-header">
+                <h2 className="section-title"><span className="emoji">{emoji}</span> {title}</h2>
             </div>
-
-            <div className="artists-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}>
-                {artists.map((artist, i) => (
+            <div className="artists-grid">
+                {items.map((artist, i) => (
                     <div
                         key={artist._id}
                         className="artist-card animate-in"
                         style={{ animationDelay: `${i * 0.06}s` }}
-                        onClick={() => navigate(`/artist/${artist._id}`)}
+                        onClick={() => navigate(`/artist/${artist._id || artist.name}`)}
                     >
                         <img
                             className="artist-card-img"
-                            src={artist.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`}
+                            src={artist.image}
                             alt={artist.name}
                             loading="lazy"
                             onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name)}&background=6c5ce7&color=fff&size=200`; }}
                         />
                         <div className="artist-card-overlay">
                             <div className="artist-card-name">{artist.name}</div>
-                            <div className="artist-card-genre">{artist.genre?.slice(0, 2).join(' • ')}</div>
                         </div>
                         <button className="artist-play-btn"><FiPlay /></button>
                     </div>
                 ))}
             </div>
+        </div>
+    );
+
+    if (loading) return <div className="loader"><div className="spinner"></div></div>;
+
+    return (
+        <div style={{ padding: '40px' }}>
+            <div className="search-results-header">
+                <h1 style={{ fontSize: '42px', fontWeight: 900 }}>Legendary Artists</h1>
+                <p>The greatest voices in musical history, curated for you.</p>
+            </div>
+
+            {renderArtistGrid(INDIAN_LEGENDS, "Indian Musical Legends", "⭐")}
+            {renderArtistGrid(MODERN_STARS, "Modern Contemporary Stars", "✨")}
+            {renderArtistGrid(INTERNATIONAL_ICONS, "International Icons", "🌍")}
         </div>
     );
 };

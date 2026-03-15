@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import SongCard from '../components/SongCard';
 import { getArtistById, getArtistMusic } from '../services/api';
+import { LEGENDARY_ARTISTS } from '../constants/artists';
 
 const ArtistPage = () => {
     const { id } = useParams();
@@ -17,8 +18,16 @@ const ArtistPage = () => {
     const loadArtist = async () => {
         setLoading(true);
         try {
-            const artistRes = await getArtistById(id);
-            const a = artistRes.data.artist;
+            let a;
+            try {
+                const artistRes = await getArtistById(id);
+                a = artistRes.data.artist;
+            } catch (e) {
+                a = LEGENDARY_ARTISTS.find(art => art._id === id);
+            }
+            if (!a) {
+                a = LEGENDARY_ARTISTS.find(art => art._id === id);
+            }
             setArtist(a);
 
             const musicRes = await getArtistMusic(a.searchQuery || a.name);

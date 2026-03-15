@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiSearch, FiLogOut, FiUser, FiShield, FiMenu, FiX, FiClock, FiHeart } from 'react-icons/fi';
+import { FiSearch, FiLogOut, FiUser, FiShield, FiMenu, FiX, FiClock, FiHeart, FiCamera, FiMessageCircle } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
+import { useMusic } from '../context/MusicContext';
 import AuthModal from './AuthModal';
 
 const TopNavbar = () => {
+    const { setShowAIAssistant, setShowMoodCamera, showAIAssistant, showMoodCamera } = useMusic();
     const [searchQuery, setSearchQuery] = useState('');
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
@@ -28,7 +30,6 @@ const TopNavbar = () => {
     const navLinks = [
         { to: '/', label: 'Home' },
         { to: '/search', label: 'Explore' },
-        { to: '/artists', label: 'Artists' },
         { to: '/favorites', label: 'Favorites' },
         { to: '/time-machine', label: 'Time Machine' },
     ];
@@ -70,11 +71,29 @@ const TopNavbar = () => {
                         <FiSearch className="top-search-icon" />
                         <input
                             type="text"
-                            placeholder="Search..."
+                            placeholder="Search for songs, albums, artists, etc..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </form>
+
+                    {/* Feature Buttons */}
+                    <div className="top-feature-btns">
+                        <button 
+                            className={`top-nav-btn ${showMoodCamera ? 'active' : ''}`} 
+                            onClick={() => setShowMoodCamera(true)}
+                            title="Mood Camera"
+                        >
+                            <FiCamera />
+                        </button>
+                        <button 
+                            className={`top-nav-btn ${showAIAssistant ? 'active' : ''}`} 
+                            onClick={() => setShowAIAssistant(true)}
+                            title="AI Assistant"
+                        >
+                            <FiMessageCircle />
+                        </button>
+                    </div>
 
                     {/* Auth Buttons */}
                     <div className="top-nav-auth">

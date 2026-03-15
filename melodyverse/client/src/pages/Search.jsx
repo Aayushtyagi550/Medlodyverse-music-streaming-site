@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 import SongCard from '../components/SongCard';
-import { searchMusic } from '../services/api';
+import { searchMusic, getTrending } from '../services/api';
 
 const Search = () => {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
     const [results, setResults] = useState([]);
+    const [weeklyTop, setWeeklyTop] = useState([]);
+    const [trending, setTrending] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState(query);
     const [nextPage, setNextPage] = useState(null);
@@ -16,8 +18,26 @@ const Search = () => {
         if (query) {
             setSearchInput(query);
             handleSearch(query);
+        } else {
+            loadExploreData();
         }
     }, [query]);
+
+    const loadExploreData = async () => {
+        setLoading(true);
+        try {
+            const [topRes, trendRes] = await Promise.all([
+                searchMusic('top tracks 2024 hits'),
+                getTrending('IN').catch(() => searchMusic('trending music'))
+            ]);
+            setWeeklyTop(topRes.data.videos?.slice(0, 6) || []);
+            setTrending(trendRes.data.videos?.slice(0, 8) || []);
+        } catch (e) {
+            console.error('Explore data load failed');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSearch = async (q, pageToken = null) => {
         if (!q.trim()) return;
@@ -37,39 +57,48 @@ const Search = () => {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (searchInput.trim()) {
-            handleSearch(searchInput);
-            window.history.pushState({}, '', `/search?q=${encodeURIComponent(searchInput)}`);
-        }
-    };
+    if (!query) {
+        return (
+            <div className="explore-dashboard">
+                <div className="explore-header">
+                    <h1>Discover New Music</h1>
+                    <p>Explore weekly top tracks and trending music from around the world.</p>
+                </div>
+
+                {/* Weekly Top Tracks */}
+                <div className="fw-section">
+                    <div className="section-header">
+                        <h2 className="section-title">Weekly Top Tracks</h2>
+                        <span className="section-link">View All <FiChevronRight /></span>
+                    </div>
+                    <div className="songs-grid">
+                        {weeklyTop.map((song, i) => (
+                            <SongCard key={song.videoId} song={song} songList={weeklyTop} animDelay={i} />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Trending Now */}
+                <div className="fw-section">
+                    <div className="section-header">
+                        <h2 className="section-title">Trending Now</h2>
+                        <span className="section-link">View All <FiChevronRight /></span>
+                    </div>
+                    <div className="songs-grid">
+                        {trending.map((song, i) => (
+                            <SongCard key={song.videoId} song={song} songList={trending} animDelay={i+4} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div>
+        <div className="search-page">
             <div className="search-results-header">
-                <h2>🔍 Explore Music</h2>
-                <p>Search for any song, artist, or genre</p>
+                <h2>Showing results for "{query}"</h2>
             </div>
-
-            <form onSubmit={handleSubmit} style={{ marginBottom: '32px' }}>
-                <div className="navbar-search" style={{ maxWidth: '600px' }}>
-                    <FiSearch className="search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Search for songs, artists, genres..."
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        style={{ fontSize: '16px', padding: '14px 16px 14px 44px' }}
-                    />
-                </div>
-            </form>
-
-            {query && (
-                <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '14px' }}>
-                    Showing results for "<strong style={{ color: 'var(--accent-primary)' }}>{query}</strong>"
-                </p>
-            )}
 
             {loading && results.length === 0 ? (
                 <div className="loader"><div className="spinner"></div></div>
@@ -83,31 +112,23 @@ const Search = () => {
                     {nextPage && (
                         <div style={{ textAlign: 'center', marginTop: '32px' }}>
                             <button
-                                className="hero-btn"
-                                onClick={() => handleSearch(query || searchInput, nextPage)}
+                                className="premium-outline-btn"
+                                onClick={() => handleSearch(query, nextPage)}
                                 disabled={loading}
-                                style={{ background: 'var(--bg-glass)', border: '1px solid var(--border-glass)' }}
                             >
                                 {loading ? 'Loading...' : 'Load More'}
                             </button>
                         </div>
                     )}
                 </>
-            ) : query ? (
+            ) : (
                 <div className="empty-state">
                     <div className="empty-icon">🎵</div>
                     <h3>No results found</h3>
                     <p>Try searching for something else</p>
                 </div>
-            ) : (
-                <div className="empty-state">
-                    <div className="empty-icon">🔍</div>
-                    <h3>Search for music</h3>
-                    <p>Find your favorite songs, artists, and more</p>
-                </div>
             )}
         </div>
     );
 };
-
 export default Search;

@@ -64,7 +64,7 @@ const MOODS = {
 };
 
 const MoodCamera = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const { showMoodCamera: isOpen, setShowMoodCamera: setIsOpen, playVideo } = useMusic();
     const [stream, setStream] = useState(null);
     const [mood, setMood] = useState(null);
     const [scanning, setScanning] = useState(false);
@@ -72,7 +72,6 @@ const MoodCamera = () => {
     const [countdown, setCountdown] = useState(null);
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
-    const { playVideo } = useMusic();
 
     const startCamera = async () => {
         try {
@@ -230,13 +229,6 @@ const MoodCamera = () => {
 
     return (
         <>
-            {/* Floating Mood Camera Button */}
-            <button className="mood-camera-fab" onClick={() => setIsOpen(true)} title="Mood Camera - Detect your mood!">
-                <div className="mood-fab-inner">
-                    📸
-                </div>
-            </button>
-
             {/* Mood Camera Modal */}
             {isOpen && (
                 <div className="mood-modal">
