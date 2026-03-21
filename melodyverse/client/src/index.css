@@ -1260,6 +1260,21 @@ body {
   font-size: 16px;
 }
 
+/* Search row that appears as a second row in both desktop and mobile */
+.top-nav-search-row {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 4px auto 0;
+  padding: 0 10px;
+}
+
+.top-nav-search-row .top-nav-search {
+  max-width: 100%;
+  margin: 0;
+  width: 100%;
+}
+
 /* ==================== MOBILE RESPONSIVE ==================== */
 @media (max-width: 768px) {
   .sidebar {
@@ -1320,21 +1335,33 @@ body {
   }
 
   .top-nav {
+    height: 110px !important;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
     padding: 0 16px;
-    height: 70px;
   }
 
   .top-nav-inner {
+    width: 100%;
+    height: auto;
     justify-content: space-between;
   }
 
-  .top-nav-search-container {
-    display: none !important;
+  .top-nav-search-row {
+    width: 100%;
+    max-width: 100% !important;
+  }
+
+  .top-nav-search-row .top-nav-search {
+    width: 100%;
+    margin: 0;
   }
 
   .top-feature-btns {
     display: none !important;
   }
+
 
   .top-nav-logo {
     display: flex !important;

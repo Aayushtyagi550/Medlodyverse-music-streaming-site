@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiSearch, FiLogOut, FiUser, FiShield, FiMenu, FiX, FiClock, FiHeart, FiCamera, FiMessageCircle, FiMoreVertical } from 'react-icons/fi';
+import { FiSearch, FiLogOut, FiShield, FiMenu, FiX, FiClock, FiHeart, FiCamera, FiMessageCircle } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { useMusic } from '../context/MusicContext';
 import AuthModal from './AuthModal';
@@ -72,12 +72,17 @@ const TopNavbar = ({ onToggleSidebar }) => {
     return (
         <>
             <nav className="top-nav">
+                {/* Row 1: Logo + Nav Links + Buttons */}
                 <div className="top-nav-inner">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <button className="top-nav-btn menu-toggle" onClick={onToggleSidebar} style={{ border: 'none', background: 'transparent', boxShadow: 'none', fontSize: '24px', padding: '0', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center' }} title="Toggle Sidebar">
+                        <button
+                            className="top-nav-btn menu-toggle"
+                            onClick={onToggleSidebar}
+                            style={{ border: 'none', background: 'transparent', boxShadow: 'none', fontSize: '24px', padding: '0', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center' }}
+                            title="Toggle Sidebar"
+                        >
                             <FiMenu />
                         </button>
-                        {/* Logo */}
                         <div className="top-nav-logo" onClick={() => navigate('/')}>
                             <div className="logo-icon-top">🎵</div>
                             <div className="logo-text-top">
@@ -87,7 +92,7 @@ const TopNavbar = ({ onToggleSidebar }) => {
                         </div>
                     </div>
 
-                    {/* Nav Links - Desktop */}
+                    {/* Desktop Nav Links */}
                     <div className="top-nav-links">
                         {navLinks.map(link => (
                             <NavLink
@@ -106,47 +111,17 @@ const TopNavbar = ({ onToggleSidebar }) => {
                         )}
                     </div>
 
-                    {/* Search */}
-                    <div className="top-nav-search-container" ref={suggestionRef} style={{ position: 'relative', flex: 1, maxWidth: '600px', margin: '0 auto' }}>
-                        <form className="top-nav-search" onSubmit={handleSearch} style={{ margin: 0, maxWidth: '100%' }}>
-                            <FiSearch className="top-search-icon" />
-                            <input
-                                type="text"
-                                placeholder="Search for songs, albums, artists, etc..."
-                                value={searchQuery}
-                                onChange={handleInput}
-                                onFocus={() => fetchSuggestions(searchQuery)}
-                            />
-                        </form>
-                        {suggestions.length > 0 && (
-                            <div className="search-suggestions" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: 'rgba(13, 13, 18, 0.95)', border: '1px solid var(--border)', borderRadius: '16px', backdropFilter: 'blur(30px)', zIndex: 1200, padding: '10px 0', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
-                                {suggestions.map((sug, i) => (
-                                    <div 
-                                        key={i} 
-                                        onClick={() => handleSuggestionClick(sug)} 
-                                        style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: '0.2s', color: 'var(--text-main)' }} 
-                                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-glass-hover)'; e.currentTarget.style.color = 'var(--accent-pink)'; }}
-                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-main)'; }}
-                                    >
-                                        <FiSearch style={{ color: 'var(--text-dim)' }} />
-                                        <span>{sug}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
                     {/* Feature Buttons */}
                     <div className="top-feature-btns">
-                        <button 
-                            className={`top-nav-btn ${showMoodCamera ? 'active' : ''}`} 
+                        <button
+                            className={`top-nav-btn ${showMoodCamera ? 'active' : ''}`}
                             onClick={() => setShowMoodCamera(true)}
                             title="Mood Camera"
                         >
                             <FiCamera />
                         </button>
-                        <button 
-                            className={`top-nav-btn ${showAIAssistant ? 'active' : ''}`} 
+                        <button
+                            className={`top-nav-btn ${showAIAssistant ? 'active' : ''}`}
                             onClick={() => setShowAIAssistant(true)}
                             title="AI Assistant"
                         >
@@ -154,7 +129,7 @@ const TopNavbar = ({ onToggleSidebar }) => {
                         </button>
                     </div>
 
-                    {/* Auth Buttons */}
+                    {/* Auth */}
                     <div className="top-nav-auth">
                         {user ? (
                             <div style={{ position: 'relative' }}>
@@ -192,13 +167,43 @@ const TopNavbar = ({ onToggleSidebar }) => {
                         )}
                     </div>
 
-                    {/* Mobile Menu Toggle */}
+                    {/* Mobile menu toggle (hamburger for nav links) */}
                     <button className="mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         {mobileMenuOpen ? <FiX /> : <FiMenu />}
                     </button>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Row 2: Search bar - always visible on both desktop and mobile */}
+                <div className="top-nav-search-row" ref={suggestionRef} style={{ position: 'relative' }}>
+                    <form className="top-nav-search" onSubmit={handleSearch}>
+                        <FiSearch className="top-search-icon" />
+                        <input
+                            type="text"
+                            placeholder="Search for songs, albums, artists..."
+                            value={searchQuery}
+                            onChange={handleInput}
+                            onFocus={() => fetchSuggestions(searchQuery)}
+                        />
+                    </form>
+                    {suggestions.length > 0 && (
+                        <div className="search-suggestions" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: 'rgba(13, 13, 18, 0.95)', border: '1px solid var(--border)', borderRadius: '16px', backdropFilter: 'blur(30px)', zIndex: 1200, padding: '10px 0', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
+                            {suggestions.map((sug, i) => (
+                                <div
+                                    key={i}
+                                    onClick={() => handleSuggestionClick(sug)}
+                                    style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: '0.2s', color: 'var(--text-main)' }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-glass-hover)'; e.currentTarget.style.color = 'var(--accent-pink)'; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                                >
+                                    <FiSearch style={{ color: 'var(--text-dim)' }} />
+                                    <span>{sug}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Mobile dropdown nav links */}
                 {mobileMenuOpen && (
                     <div className="mobile-dropdown">
                         {navLinks.map(link => (
