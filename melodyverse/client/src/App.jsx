@@ -22,13 +22,18 @@ import './App.css';
 
 function App() {
   const { showPlayer } = useMusic();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className={`app-container ${!isSidebarOpen ? 'sidebar-closed' : ''}`}>
+      {isSidebarOpen && window.innerWidth <= 768 && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
+      )}
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="app-main-content">
-        <TopNavbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <TopNavbar onToggleSidebar={toggleSidebar} />
         <main className={`main-scroll ${showPlayer ? 'player-active' : ''}`}>
           <Routes>
             <Route path="/" element={<Home />} />

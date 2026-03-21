@@ -1259,3 +1259,143 @@ body {
   font-weight: 700;
   font-size: 16px;
 }
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0 !important;
+    top: 0;
+    bottom: 0;
+    width: 280px !important;
+    z-index: 3000;
+    transform: translateX(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+    background: #0d0d12 !important;
+    display: flex !important;
+    opacity: 1 !important;
+  }
+
+  .sidebar.closed {
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .app-container {
+    flex-direction: column;
+  }
+
+  .app-main-content {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .music-player {
+    left: 0 !important;
+    padding: 0 16px;
+    height: 80px;
+    gap: 10px;
+  }
+
+  .player-track-info {
+    min-width: auto;
+    flex: 1;
+  }
+
+  .player-track-title {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+
+  .player-controls {
+    flex: none;
+  }
+
+  .player-progress {
+    display: none !important;
+  }
+
+  .top-nav {
+    padding: 0 16px;
+    height: 70px;
+  }
+
+  .top-nav-inner {
+    justify-content: space-between;
+  }
+
+  .top-nav-search-container {
+    display: none !important;
+  }
+
+  .top-feature-btns {
+    display: none !important;
+  }
+
+  .top-nav-logo {
+    display: flex !important;
+  }
+
+  .logo-name {
+    font-size: 16px;
+  }
+
+  .logo-sub {
+    display: none;
+  }
+
+  .explore-header h1 {
+    font-size: 26px;
+  }
+
+  .songs-grid, .artists-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .fw-carousel-section {
+    padding: 20px 16px;
+  }
+
+  .fw-card {
+    flex: 0 0 240px;
+  }
+
+  .fw-hero-premium {
+    height: 40vh;
+    min-height: 300px;
+  }
+
+  .fw-hero-content-clean {
+    margin-top: 2rem;
+    padding: 0 15px;
+  }
+
+  .premium-play-btn, .premium-outline-btn {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 2999;
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .songs-grid, .artists-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .player-track-info {
+    max-width: 150px;
+  }
+}
