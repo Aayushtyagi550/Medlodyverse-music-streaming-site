@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useMusic } from './context/MusicContext';
@@ -15,16 +16,19 @@ import Favorites from './pages/Favorites';
 import Playlists from './pages/Playlists';
 import TimeMachine from './pages/TimeMachine';
 import Admin from './pages/Admin';
+import About from './pages/About';
+import Settings from './pages/Settings';
 import './App.css';
 
 function App() {
   const { showPlayer } = useMusic();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="app-container">
-      <Sidebar />
+    <div className={`app-container ${!isSidebarOpen ? 'sidebar-closed' : ''}`}>
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="app-main-content">
-        <TopNavbar />
+        <TopNavbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className={`main-scroll ${showPlayer ? 'player-active' : ''}`}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -36,6 +40,8 @@ function App() {
             <Route path="/playlists" element={<Playlists />} />
             <Route path="/time-machine" element={<TimeMachine />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
         {showPlayer && <MusicPlayer />}

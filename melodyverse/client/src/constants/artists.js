@@ -51,7 +51,7 @@ export const MODERN_STARS = [
         _id: 'arijit-singh',
         name: 'Arijit Singh',
         tagline: 'The Modern Soul of Bollywood',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Arijit_Singh.jpg',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/4/4b/Arijit_Singh.jpg',
         category: 'modern',
         genre: ['Bollywood', 'Soulful'],
         searchQuery: 'Arijit Singh latest songs'
@@ -60,7 +60,7 @@ export const MODERN_STARS = [
         _id: 'ar-rahman',
         name: 'A.R. Rahman',
         tagline: 'The Mozart of Madras',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/A._R._Rahman.jpg',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/4/40/A._R._Rahman_at_the_release_of_the_official_song_of_the_2018_Hockey_World_Cup.jpg',
         category: 'modern',
         genre: ['Bollywood', 'Classical', 'Sufi'],
         searchQuery: 'AR Rahman music collections'

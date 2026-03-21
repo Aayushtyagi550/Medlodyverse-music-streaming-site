@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FiPlay, FiPause, FiSkipBack, FiSkipForward, FiVolume2, FiVolumeX, FiX, FiDownload, FiTv, FiMaximize, FiAirplay, FiSettings, FiSquare } from 'react-icons/fi';
+import { FiPlay, FiPause, FiSkipBack, FiSkipForward, FiVolume2, FiVolumeX, FiX, FiDownload, FiTv, FiMaximize, FiAirplay, FiSettings, FiSquare, FiMinimize2, FiChevronsRight, FiChevronsLeft } from 'react-icons/fi';
 import { useMusic } from '../context/MusicContext';
 
 const MusicPlayer = () => {
@@ -20,6 +20,7 @@ const MusicPlayer = () => {
     const isResizing = useRef(false);
     const [showQualityMenu, setShowQualityMenu] = useState(false);
     const [quality, setQuality] = useState('auto');
+    const [seekFeedback, setSeekFeedback] = useState(null);
 
     // Load YouTube IFrame API
     useEffect(() => {
@@ -141,6 +142,14 @@ const MusicPlayer = () => {
         ytPlayer.seekTo(percent * totalTime, true);
     };
 
+    const handleSeek = (offset) => {
+        if (!ytPlayer || !totalTime) return;
+        const newTime = ytPlayer.getCurrentTime() + offset;
+        ytPlayer.seekTo(Math.max(0, Math.min(newTime, totalTime)), true);
+        setSeekFeedback(offset > 0 ? '+10s' : '-10s');
+        setTimeout(() => setSeekFeedback(null), 800);
+    };
+
     const formatTime = (seconds) => {
         if (!seconds || isNaN(seconds)) return '0:00';
         const mins = Math.floor(seconds / 60);
@@ -213,9 +222,24 @@ const MusicPlayer = () => {
                 style={!isTheaterMode ? { width: `${videoSize.width}px`, height: `${videoSize.height}px` } : {}}
             >
                 <div id="yt-player"></div>
+                {/* Seek Overlays */}
+                <div className="seek-overlay backward" onDoubleClick={() => handleSeek(-10)}></div>
+                <div className="seek-overlay forward" onDoubleClick={() => handleSeek(10)}></div>
+
+                {/* Seek Feedback */}
+                {seekFeedback && (
+                    <div className={`seek-feedback ${seekFeedback === '+10s' ? 'forward-fb' : 'backward-fb'}`}>
+                        {seekFeedback === '+10s' ? <FiChevronsRight /> : <FiChevronsLeft />}
+                        <span>10s</span>
+                    </div>
+                )}
+
                 {showVideo && (
                     <>
-                        <button className="video-close-btn" onClick={() => setShowVideo(false)}>
+                        <button className="video-close-btn" style={{ right: '50px' }} onClick={() => setShowVideo(false)} title="Minimize Video">
+                            <FiMinimize2 />
+                        </button>
+                        <button className="video-close-btn" style={{ right: '10px' }} onClick={closePlayer} title="Close Player">
                             <FiX />
                         </button>
                         <div className="video-controls-top">

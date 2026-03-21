@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const musicRoutes = require('./routes/music');
@@ -33,10 +34,16 @@ app.use('/music', musicRoutes);
 app.use('/admin', adminRoutes);
 app.use('/public', publicRoutes);
 
-// Health check
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'MelodyVerse API is running 🎵' });
-});
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production' || true) { // Force for now to test unified deployment
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+    
+    app.get('*', (req, res) => {
+        if (!req.path.startsWith('/api')) {
+            res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+        }
+    });
+}
 
 // Error handler
 app.use((err, req, res, next) => {

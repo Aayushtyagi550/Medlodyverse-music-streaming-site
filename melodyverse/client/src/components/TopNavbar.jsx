@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiSearch, FiLogOut, FiUser, FiShield, FiMenu, FiX, FiClock, FiHeart, FiCamera, FiMessageCircle } from 'react-icons/fi';
+import { FiSearch, FiLogOut, FiUser, FiShield, FiMenu, FiX, FiClock, FiHeart, FiCamera, FiMessageCircle, FiMoreVertical } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { useMusic } from '../context/MusicContext';
 import AuthModal from './AuthModal';
 
-const TopNavbar = () => {
+const TopNavbar = ({ onToggleSidebar }) => {
     const { setShowAIAssistant, setShowMoodCamera, showAIAssistant, showMoodCamera } = useMusic();
     const [searchQuery, setSearchQuery] = useState('');
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -14,6 +14,41 @@ const TopNavbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const [suggestions, setSuggestions] = useState([]);
+    const suggestionRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
+                setSuggestions([]);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const fetchSuggestions = (query) => {
+        if (!query.trim()) { setSuggestions([]); return; }
+        const popular = [
+            "Arijit Singh", "Taylor Swift", "Lata Mangeshkar", "Kishore Kumar", "Ed Sheeran",
+            "Shreya Ghoshal", "Bollywood Hits", "90s Songs", "Pop Mix", "Lo-Fi Beats", 
+            "Hindi Sad Songs", "Punjabi Pop", "Michael Jackson", "Neha Kakkar"
+        ];
+        const res = popular.filter(p => p.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
+        setSuggestions(res);
+    };
+
+    const handleInput = (e) => {
+        const val = e.target.value;
+        setSearchQuery(val);
+        fetchSuggestions(val);
+    };
+
+    const handleSuggestionClick = (sug) => {
+        setSearchQuery(sug);
+        setSuggestions([]);
+        navigate(`/search?q=${encodeURIComponent(sug)}`);
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -38,12 +73,17 @@ const TopNavbar = () => {
         <>
             <nav className="top-nav">
                 <div className="top-nav-inner">
-                    {/* Logo */}
-                    <div className="top-nav-logo" onClick={() => navigate('/')}>
-                        <div className="logo-icon-top">🎵</div>
-                        <div className="logo-text-top">
-                            <span className="logo-name">MELODY<span className="logo-accent">VERSE</span></span>
-                            <span className="logo-sub">Music Video Streaming App</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <button className="top-nav-btn menu-toggle" onClick={onToggleSidebar} style={{ border: 'none', background: 'transparent', boxShadow: 'none', fontSize: '24px', padding: '0', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center' }} title="Toggle Sidebar">
+                            <FiMenu />
+                        </button>
+                        {/* Logo */}
+                        <div className="top-nav-logo" onClick={() => navigate('/')}>
+                            <div className="logo-icon-top">🎵</div>
+                            <div className="logo-text-top">
+                                <span className="logo-name">MELODY<span className="logo-accent">VERSE</span></span>
+                                <span className="logo-sub">Music Video Streaming App</span>
+                            </div>
                         </div>
                     </div>
 
@@ -67,15 +107,34 @@ const TopNavbar = () => {
                     </div>
 
                     {/* Search */}
-                    <form className="top-nav-search" onSubmit={handleSearch}>
-                        <FiSearch className="top-search-icon" />
-                        <input
-                            type="text"
-                            placeholder="Search for songs, albums, artists, etc..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </form>
+                    <div className="top-nav-search-container" ref={suggestionRef} style={{ position: 'relative', flex: 1, maxWidth: '600px', margin: '0 auto' }}>
+                        <form className="top-nav-search" onSubmit={handleSearch} style={{ margin: 0, maxWidth: '100%' }}>
+                            <FiSearch className="top-search-icon" />
+                            <input
+                                type="text"
+                                placeholder="Search for songs, albums, artists, etc..."
+                                value={searchQuery}
+                                onChange={handleInput}
+                                onFocus={() => fetchSuggestions(searchQuery)}
+                            />
+                        </form>
+                        {suggestions.length > 0 && (
+                            <div className="search-suggestions" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: 'rgba(13, 13, 18, 0.95)', border: '1px solid var(--border)', borderRadius: '16px', backdropFilter: 'blur(30px)', zIndex: 1200, padding: '10px 0', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
+                                {suggestions.map((sug, i) => (
+                                    <div 
+                                        key={i} 
+                                        onClick={() => handleSuggestionClick(sug)} 
+                                        style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: '0.2s', color: 'var(--text-main)' }} 
+                                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-glass-hover)'; e.currentTarget.style.color = 'var(--accent-pink)'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                                    >
+                                        <FiSearch style={{ color: 'var(--text-dim)' }} />
+                                        <span>{sug}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                     {/* Feature Buttons */}
                     <div className="top-feature-btns">

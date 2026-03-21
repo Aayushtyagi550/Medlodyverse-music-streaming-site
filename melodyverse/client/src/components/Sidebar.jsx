@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiHome, FiCompass, FiMusic, FiUsers, FiRadio, FiClock, FiHeart, FiFolder, FiPlusCircle, FiBarChart } from 'react-icons/fi';
+import { FiHome, FiCompass, FiMusic, FiUsers, FiRadio, FiClock, FiHeart, FiFolder, FiPlusCircle, FiBarChart, FiInfo, FiSettings } from 'react-icons/fi';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
     const navigate = useNavigate();
 
     const menuItems = [
@@ -23,8 +23,13 @@ const Sidebar = () => {
         { label: 'Bollywood', to: '/category/Bollywood' },
     ];
 
+    const otherItems = [
+        { icon: <FiInfo />, label: 'About', to: '/about' },
+        { icon: <FiSettings />, label: 'Settings', to: '/settings' },
+    ];
+
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${isOpen ? '' : 'closed'}`}>
             <div className="sidebar-logo" onClick={() => navigate('/')}>
                 <div className="logo-icon-side">🎵</div>
                 <div className="logo-text-side">
@@ -61,6 +66,16 @@ const Sidebar = () => {
                 {playlistItems.map(item => (
                     <NavLink key={item.to} to={item.to} className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}>
                         <span className="sidebar-icon"><FiBarChart /></span>
+                        <span className="sidebar-label">{item.label}</span>
+                    </NavLink>
+                ))}
+            </div>
+
+            <div className="sidebar-section">
+                <div className="sidebar-section-title">OTHER</div>
+                {otherItems.map(item => (
+                    <NavLink key={item.to} to={item.to} className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}>
+                        <span className="sidebar-icon">{item.icon}</span>
                         <span className="sidebar-label">{item.label}</span>
                     </NavLink>
                 ))}
