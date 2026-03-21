@@ -22,25 +22,22 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
+// API Routes (Prefixed with /api)
 app.use('/api/auth', authRoutes);
 app.use('/api/music', musicRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/public', publicRoutes);
 
-// Fallback routes for misconfigured frontends
-app.use('/auth', authRoutes);
-app.use('/music', musicRoutes);
-app.use('/admin', adminRoutes);
-app.use('/public', publicRoutes);
-
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production' || true) { // Force for now to test unified deployment
-    app.use(express.static(path.join(__dirname, '../client/dist')));
+// SERVE STATIC ASSETS & SPA ROUTING (Only in Production mode)
+// Note: This must come AFTER API routes
+if (process.env.NODE_ENV === 'production' || true) {
+    const distPath = path.join(__dirname, '../client/dist');
+    app.use(express.static(distPath));
     
     app.get('*', (req, res) => {
+        // Only serve index.html for non-API requests
         if (!req.path.startsWith('/api')) {
-            res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+            res.sendFile(path.resolve(distPath, 'index.html'));
         }
     });
 }
