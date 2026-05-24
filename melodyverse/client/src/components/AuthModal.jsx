@@ -99,8 +99,8 @@ const AuthModal = ({ mode, onClose, onSwitchMode }) => {
             `}</style>
 
             <div className="modern-auth-container" onClick={e => e.stopPropagation()}>
-                {/* Left Side: Graphic */}
-                <div className="auth-side-graphic" style={{ order: isLogin ? 1 : 2 }}>
+                {/* Left Side: Graphic (always on left) */}
+                <div className="auth-side-graphic">
                     <div className="auth-graphic-content">
                         <h2>{isLogin ? 'Welcome Back.' : 'Start Listening.'}</h2>
                         <p>{isLogin ? 'Log in to access your curated playlists, top tracks, and personal history.' : 'Join the fastest-growing next-generation music streaming community today.'}</p>
@@ -108,7 +108,7 @@ const AuthModal = ({ mode, onClose, onSwitchMode }) => {
                 </div>
 
                 {/* Right Side: Form */}
-                <div className="auth-form-wrapper" style={{ order: isLogin ? 2 : 1 }}>
+                <div className="auth-form-wrapper">
                     <button className="modern-close-btn" onClick={onClose}><FiX /></button>
                     
                     <div className="auth-header">

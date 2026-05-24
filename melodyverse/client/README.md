@@ -1,16 +1,38 @@
-# React + Vite
+# 🎵 MelodyVerse - Frontend Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend component of MelodyVerse, built heavily focused on delivering a rich, responsive, and cinematic music streaming experience. 
 
-Currently, two official plugins are available:
+## ⚡ Built With
+- **React.js** (Bootstrapped with [Vite](https://vitejs.dev/))
+- **Context API** (Global state management for Auth and Audio Player)
+- **Vanilla CSS** (Custom, hand-crafted styles including glassmorphism and modern aesthetics)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Getting Started
 
-## React Compiler
+Ensure you have run `npm install` in this directory (or executed `npm run install:all` from the parent directory).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Development Server
 
-## Expanding the ESLint configuration
+Run the development instance locally with auto-reloading:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm run dev
+```
+The application will be accessible at typically `http://localhost:5173/`.
+
+### Build for Production
+
+To create an optimized production bundle:
+
+```bash
+npm run build
+```
+This generates static files inside the `dist` directory, which can be served by our Express server natively.
+
+## 🎨 Design System & CSS
+The client does not rely on heavy CSS frameworks; styles are predominantly defined manually in vanilla CSS utilizing CSS Variables (`index.css`) to enforce a clean and consistent Design System (dark themes, fluid typography, subtle glowing effects, etc.).
+
+## 📡 API Integration
+The client communicates with:
+1. `localhost:5000/api/*` (The local Express Backend for user, auth, and logic)
+2. `YouTube Data API v3` (If configured on the server, ensuring audio results stream smoothly).

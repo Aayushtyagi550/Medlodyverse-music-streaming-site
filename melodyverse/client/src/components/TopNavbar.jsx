@@ -1,12 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiSearch, FiLogOut, FiShield, FiMenu, FiX, FiClock, FiHeart, FiCamera, FiMessageCircle } from 'react-icons/fi';
+import { FiSearch, FiLogOut, FiShield, FiMenu, FiX, FiClock, FiHeart, FiCamera, FiMessageCircle, FiTrendingUp } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { useMusic } from '../context/MusicContext';
 import AuthModal from './AuthModal';
+import { searchMusic } from '../services/api';
+import { suggestionsCache } from '../utils/searchCache';
+
+const STATIC_SUGGESTIONS = [
+    "Arijit Singh", "Taylor Swift", "Lata Mangeshkar", "Kishore Kumar", "Ed Sheeran",
+    "Shreya Ghoshal", "Bollywood Hits", "90s Songs", "Pop Mix", "Lo-Fi Beats",
+    "Hindi Sad Songs", "Punjabi Pop", "Michael Jackson", "Neha Kakkar",
+    "Drake", "The Weeknd", "Dua Lipa", "BTS", "A.R. Rahman", "Pritam"
+];
 
 const TopNavbar = ({ onToggleSidebar }) => {
-    const { setShowAIAssistant, setShowMoodCamera, showAIAssistant, showMoodCamera } = useMusic();
+    const { setShowAIAssistant, setShowMoodCamera, showAIAssistant, showMoodCamera, playVideo } = useMusic();
     const [searchQuery, setSearchQuery] = useState('');
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
@@ -14,47 +23,106 @@ const TopNavbar = ({ onToggleSidebar }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const [suggestions, setSuggestions] = useState([]);
-    const suggestionRef = useRef(null);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [textSuggestions, setTextSuggestions] = useState([]);
+    const [videoSuggestions, setVideoSuggestions] = useState([]);
+    const [loadingVideos, setLoadingVideos] = useState(false);
+    const dropdownRef = useRef(null);
+    const debounceTimer = useRef(null);
+    const inputRef = useRef(null);
+    const lastFetchedQuery = useRef('');
 
+    // Close dropdown on outside click
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
-                setSuggestions([]);
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                // Only close if the target is still actively in the document (prevents detached node issues)
+                if (document.contains(e.target)) {
+                    setShowDropdown(false);
+                }
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const fetchSuggestions = (query) => {
-        if (!query.trim()) { setSuggestions([]); return; }
-        const popular = [
-            "Arijit Singh", "Taylor Swift", "Lata Mangeshkar", "Kishore Kumar", "Ed Sheeran",
-            "Shreya Ghoshal", "Bollywood Hits", "90s Songs", "Pop Mix", "Lo-Fi Beats", 
-            "Hindi Sad Songs", "Punjabi Pop", "Michael Jackson", "Neha Kakkar"
-        ];
-        const res = popular.filter(p => p.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
-        setSuggestions(res);
-    };
+    // Debounced search for live video suggestions
+    const fetchVideoSuggestions = useCallback((query) => {
+        clearTimeout(debounceTimer.current);
+        const trimmed = query.trim();
+        if (!trimmed) {
+            setVideoSuggestions([]);
+            setLoadingVideos(false);
+            return;
+        }
+        // ─── Min query length guard (< 3 chars = skip API call) ────────
+        if (trimmed.length < 3) {
+            setLoadingVideos(false);
+            return;
+        }
+        // ─── Duplicate query prevention ────────────────────────────────
+        if (trimmed === lastFetchedQuery.current) {
+            return;
+        }
+        setLoadingVideos(true);
+        debounceTimer.current = setTimeout(async () => {
+            try {
+                // ─── Client cache check ────────────────────────────────
+                const cacheKey = `suggest:${trimmed.toLowerCase()}`;
+                const cached = suggestionsCache.get(cacheKey);
+                if (cached) {
+                    setVideoSuggestions(cached);
+                    lastFetchedQuery.current = trimmed;
+                    setLoadingVideos(false);
+                    return;
+                }
+                const res = await searchMusic(query);
+                const videos = (res.data.videos || []).slice(0, 5);
+                setVideoSuggestions(videos);
+                suggestionsCache.set(cacheKey, videos);
+                lastFetchedQuery.current = trimmed;
+            } catch (e) {
+                setVideoSuggestions([]);
+            } finally {
+                setLoadingVideos(false);
+            }
+        }, 600);
+    }, []);
 
     const handleInput = (e) => {
         const val = e.target.value;
         setSearchQuery(val);
-        fetchSuggestions(val);
-    };
-
-    const handleSuggestionClick = (sug) => {
-        setSearchQuery(sug);
-        setSuggestions([]);
-        navigate(`/search?q=${encodeURIComponent(sug)}`);
+        if (val.trim()) {
+            const matches = STATIC_SUGGESTIONS
+                .filter(s => s.toLowerCase().includes(val.toLowerCase()))
+                .slice(0, 4);
+            setTextSuggestions(matches);
+            fetchVideoSuggestions(val);
+            setShowDropdown(true);
+        } else {
+            setTextSuggestions([]);
+            setVideoSuggestions([]);
+            setShowDropdown(false);
+        }
     };
 
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
+            setShowDropdown(false);
             navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
         }
+    };
+
+    const handleSuggestionClick = (sug) => {
+        setSearchQuery(sug);
+        setShowDropdown(false);
+        navigate(`/search?q=${encodeURIComponent(sug)}`);
+    };
+
+    const handleVideoClick = (video) => {
+        setShowDropdown(false);
+        playVideo(video, [video]);
     };
 
     const openAuth = (mode) => {
@@ -68,6 +136,9 @@ const TopNavbar = ({ onToggleSidebar }) => {
         { to: '/favorites', label: 'Favorites' },
         { to: '/time-machine', label: 'Time Machine' },
     ];
+
+    // Keep dropdown open as long as there's text, to prevent it from suddenly disappearing
+    const hasDropdownContent = searchQuery.trim().length > 0;
 
     return (
         <>
@@ -84,7 +155,9 @@ const TopNavbar = ({ onToggleSidebar }) => {
                             <FiMenu />
                         </button>
                         <div className="top-nav-logo" onClick={() => navigate('/')}>
-                            <div className="logo-icon-top">🎵</div>
+                            <div className="logo-icon-top">
+                                <img src="/favicon.svg" alt="MelodyVerse Logo" className="app-logo-img" />
+                            </div>
                             <div className="logo-text-top">
                                 <span className="logo-name">MELODY<span className="logo-accent">VERSE</span></span>
                                 <span className="logo-sub">Music Video Streaming App</span>
@@ -138,9 +211,9 @@ const TopNavbar = ({ onToggleSidebar }) => {
                                 </div>
                                 {showUserMenu && (
                                     <div className="user-menu" style={{ top: '50px', right: '0' }}>
-                                        <div style={{ padding: '10px 12px', borderBottom: '1px solid var(--border-glass)', marginBottom: '4px' }}>
+                                        <div style={{ padding: '10px 12px', borderBottom: '1px solid var(--border)', marginBottom: '4px' }}>
                                             <div style={{ fontWeight: 600, fontSize: '14px' }}>{user.name}</div>
-                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{user.email}</div>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>{user.email}</div>
                                         </div>
                                         {user.role === 'admin' && (
                                             <button className="user-menu-item" onClick={() => { navigate('/admin'); setShowUserMenu(false); }}>
@@ -167,38 +240,109 @@ const TopNavbar = ({ onToggleSidebar }) => {
                         )}
                     </div>
 
-                    {/* Mobile menu toggle (hamburger for nav links) */}
+                    {/* Mobile menu toggle */}
                     <button className="mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         {mobileMenuOpen ? <FiX /> : <FiMenu />}
                     </button>
                 </div>
 
-                {/* Row 2: Search bar - always visible on both desktop and mobile */}
-                <div className="top-nav-search-row" ref={suggestionRef} style={{ position: 'relative' }}>
+                {/* Row 2: Search bar with live suggestions dropdown */}
+                <div className="top-nav-search-row" ref={dropdownRef} style={{ position: 'relative' }}>
                     <form className="top-nav-search" onSubmit={handleSearch}>
                         <FiSearch className="top-search-icon" />
                         <input
+                            ref={inputRef}
                             type="text"
                             placeholder="Search for songs, albums, artists..."
                             value={searchQuery}
                             onChange={handleInput}
-                            onFocus={() => fetchSuggestions(searchQuery)}
+                            onFocus={() => { if (searchQuery.trim()) setShowDropdown(true); }}
+                            autoComplete="off"
                         />
+                        {searchQuery && (
+                            <button
+                                type="button"
+                                onClick={() => { setSearchQuery(''); setShowDropdown(false); setVideoSuggestions([]); setTextSuggestions([]); inputRef.current?.focus(); }}
+                                style={{ position: 'absolute', right: '16px', background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', display: 'flex', fontSize: '16px' }}
+                            >
+                                <FiX />
+                            </button>
+                        )}
                     </form>
-                    {suggestions.length > 0 && (
-                        <div className="search-suggestions" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: 'rgba(13, 13, 18, 0.95)', border: '1px solid var(--border)', borderRadius: '16px', backdropFilter: 'blur(30px)', zIndex: 1200, padding: '10px 0', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
-                            {suggestions.map((sug, i) => (
-                                <div
-                                    key={i}
-                                    onClick={() => handleSuggestionClick(sug)}
-                                    style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: '0.2s', color: 'var(--text-main)' }}
-                                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-glass-hover)'; e.currentTarget.style.color = 'var(--accent-pink)'; }}
-                                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-main)'; }}
-                                >
-                                    <FiSearch style={{ color: 'var(--text-dim)' }} />
-                                    <span>{sug}</span>
+
+                    {/* Live Search Dropdown */}
+                    {showDropdown && hasDropdownContent && (
+                        <div className="search-live-dropdown">
+                            {/* Text suggestions */}
+                            {textSuggestions.length > 0 && (
+                                <div className="search-dropdown-section">
+                                    <div className="search-dropdown-label">
+                                        <FiSearch size={11} /> Suggestions
+                                    </div>
+                                    {textSuggestions.map((sug, i) => (
+                                        <div
+                                            key={i}
+                                            className="search-text-suggestion"
+                                            onClick={() => handleSuggestionClick(sug)}
+                                        >
+                                            <FiSearch className="search-sug-icon" />
+                                            <span>{sug}</span>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
+
+                            {/* Divider if both sections exist */}
+                            {textSuggestions.length > 0 && (videoSuggestions.length > 0 || loadingVideos) && (
+                                <div className="search-dropdown-divider" />
+                            )}
+
+                            {/* Video suggestions */}
+                            {(loadingVideos || videoSuggestions.length > 0) && (
+                                <div className="search-dropdown-section">
+                                    <div className="search-dropdown-label">
+                                        <FiTrendingUp size={11} /> Videos
+                                    </div>
+                                    {loadingVideos && videoSuggestions.length === 0 ? (
+                                        <div className="search-dropdown-loading">
+                                            <div className="search-loading-dots">
+                                                <span /><span /><span />
+                                            </div>
+                                            <span>Searching...</span>
+                                        </div>
+                                    ) : videoSuggestions.map((video, i) => (
+                                        <div
+                                            key={video.videoId}
+                                            className="search-video-suggestion"
+                                            onClick={() => handleVideoClick(video)}
+                                        >
+                                            <div className="search-vid-thumb">
+                                                <img
+                                                    src={video.thumbnail || `https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`}
+                                                    alt={video.title}
+                                                    onError={(e) => { e.target.src = `https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`; }}
+                                                />
+                                                <div className="search-vid-play">▶</div>
+                                            </div>
+                                            <div className="search-vid-info">
+                                                <div className="search-vid-title">{video.title}</div>
+                                                <div className="search-vid-channel">{video.channelTitle}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Footer: search all results */}
+                            {searchQuery.trim() && (
+                                <div
+                                    className="search-dropdown-footer"
+                                    onClick={() => handleSuggestionClick(searchQuery)}
+                                >
+                                    <FiSearch size={13} />
+                                    Search all results for &ldquo;<strong>{searchQuery}</strong>&rdquo;
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
