@@ -29,6 +29,7 @@ const seedData = async () => {
         // Seed Legendary Artists
         const artists = [
             {
+                _id: 'lata-mangeshkar',
                 name: 'Lata Mangeshkar',
                 bio: 'The Nightingale of India, with a career spanning over seven decades. Known for her melodious voice that has touched millions of hearts worldwide.',
                 genre: ['Bollywood', 'Indian Classical', 'Ghazal', 'Devotional'],
@@ -36,9 +37,10 @@ const seedData = async () => {
                 era: '1940s-2020s',
                 featured: true,
                 searchQuery: 'Lata Mangeshkar best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Lata_Mangeshkar_2011.jpg/800px-Lata_Mangeshkar_2011.jpg'
+                image: '/artists/lata-mangeshkar.jpg'
             },
             {
+                _id: 'mukesh',
                 name: 'Mukesh',
                 bio: 'One of the most beloved playback singers in Hindi cinema, known for his soulful voice and emotional renditions. Voice of Raj Kapoor.',
                 genre: ['Bollywood', 'Classical'],
@@ -46,9 +48,10 @@ const seedData = async () => {
                 era: '1940s-1970s',
                 featured: true,
                 searchQuery: 'Mukesh singer best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Mukesh_singer.jpg/440px-Mukesh_singer.jpg'
+                image: '/artists/mukesh.jpg'
             },
             {
+                _id: 'kishore-kumar',
                 name: 'Kishore Kumar',
                 bio: 'The legendary singer, actor, and filmmaker. Known for his versatile voice ranging from romantic melodies to energetic numbers.',
                 genre: ['Bollywood', 'Pop', 'Classical'],
@@ -56,9 +59,10 @@ const seedData = async () => {
                 era: '1940s-1980s',
                 featured: true,
                 searchQuery: 'Kishore Kumar hit songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Kishore_Kumar_in_1970s.jpg/440px-Kishore_Kumar_in_1970s.jpg'
+                image: '/artists/kishore-kumar.jpg'
             },
             {
+                _id: 'mohammed-rafi',
                 name: 'Mohammed Rafi',
                 bio: 'One of the greatest playback singers in Indian cinema history. Known for his extraordinary voice range and versatility.',
                 genre: ['Bollywood', 'Qawwali', 'Ghazal', 'Classical'],
@@ -66,9 +70,10 @@ const seedData = async () => {
                 era: '1940s-1980s',
                 featured: true,
                 searchQuery: 'Mohammed Rafi hit songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Mohammed_Rafi.jpg'
+                image: '/artists/mohammed-rafi.jpg'
             },
             {
+                _id: 'asha-bhosle',
                 name: 'Asha Bhosle',
                 bio: 'One of the most versatile singers in Indian cinema with over 12,000 songs. Known for her adaptability across genres.',
                 genre: ['Bollywood', 'Pop', 'Ghazal', 'Classical'],
@@ -76,9 +81,10 @@ const seedData = async () => {
                 era: '1940s-present',
                 featured: true,
                 searchQuery: 'Asha Bhosle best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Asha_Bhosle_at_the_Strength_of_a_Woman_awards_2014.jpg/440px-Asha_Bhosle_at_the_Strength_of_a_Woman_awards_2014.jpg'
+                image: '/artists/asha-bhosle.jpg'
             },
             {
+                _id: 'arijit-singh',
                 name: 'Arijit Singh',
                 bio: 'The modern voice of Bollywood. Known for his soulful and emotional singing style that has defined contemporary Indian music.',
                 genre: ['Bollywood', 'Pop', 'Romantic'],
@@ -86,9 +92,10 @@ const seedData = async () => {
                 era: '2010s-present',
                 featured: true,
                 searchQuery: 'Arijit Singh hit songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Arijit_Singh_2023.jpg/440px-Arijit_Singh_2023.jpg'
+                image: '/artists/arijit-singh.jpg'
             },
             {
+                _id: 'ar-rahman',
                 name: 'A.R. Rahman',
                 bio: 'The Mozart of Madras. Academy Award-winning composer and singer who revolutionized Indian film music.',
                 genre: ['Bollywood', 'Classical', 'Electronic', 'World Music'],
@@ -96,9 +103,10 @@ const seedData = async () => {
                 era: '1990s-present',
                 featured: true,
                 searchQuery: 'AR Rahman best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/A._R._Rahman_at_the_2019_Toronto_International_Film_Festival.jpg/440px-A._R._Rahman_at_the_2019_Toronto_International_Film_Festival.jpg'
+                image: '/artists/ar-rahman.jpg'
             },
             {
+                _id: 'shreya-ghoshal',
                 name: 'Shreya Ghoshal',
                 bio: 'Multiple National Award-winning playback singer known for her classical training and versatile voice.',
                 genre: ['Bollywood', 'Classical', 'Devotional'],
@@ -106,9 +114,10 @@ const seedData = async () => {
                 era: '2000s-present',
                 featured: true,
                 searchQuery: 'Shreya Ghoshal hit songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Shreya_Ghoshal_at_Filmfare_2016.jpg/440px-Shreya_Ghoshal_at_Filmfare_2016.jpg'
+                image: '/artists/shreya-ghoshal.jpg'
             },
             {
+                _id: 'freddie-mercury',
                 name: 'Freddie Mercury',
                 bio: 'The legendary Queen frontman. One of the greatest singers in rock history with an extraordinary vocal range.',
                 genre: ['Rock', 'Pop', 'Opera Rock'],
@@ -116,9 +125,10 @@ const seedData = async () => {
                 era: '1970s-1990s',
                 featured: true,
                 searchQuery: 'Freddie Mercury Queen best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg/800px-Freddie_Mercury_performing_in_New_Haven%2C_CT%2C_November_1977.jpg'
+                image: '/artists/freddie-mercury.jpg'
             },
             {
+                _id: 'michael-jackson',
                 name: 'Michael Jackson',
                 bio: 'The King of Pop. The most awarded music artist in history, known for revolutionary music and iconic dance moves.',
                 genre: ['Pop', 'R&B', 'Dance'],
@@ -126,9 +136,10 @@ const seedData = async () => {
                 era: '1960s-2000s',
                 featured: true,
                 searchQuery: 'Michael Jackson greatest hits',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Michael_Jackson_in_1988.jpg/440px-Michael_Jackson_in_1988.jpg'
+                image: '/artists/michael-jackson.jpg'
             },
             {
+                _id: 'elvis-presley',
                 name: 'Elvis Presley',
                 bio: 'The King of Rock and Roll. One of the most significant cultural icons of the 20th century.',
                 genre: ['Rock', 'Pop', 'Country', 'Gospel'],
@@ -136,9 +147,10 @@ const seedData = async () => {
                 era: '1950s-1970s',
                 featured: true,
                 searchQuery: 'Elvis Presley greatest hits',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Elvis_Presley_promoting_Jailhouse_Rock.jpg/440px-Elvis_Presley_promoting_Jailhouse_Rock.jpg'
+                image: '/artists/elvis-presley.jpg'
             },
             {
+                _id: 'sonu-nigam',
                 name: 'Sonu Nigam',
                 bio: 'One of the most versatile Indian singers, known for his melodious voice and live performances.',
                 genre: ['Bollywood', 'Pop', 'Classical', 'Ghazal'],
@@ -146,9 +158,10 @@ const seedData = async () => {
                 era: '1990s-present',
                 featured: true,
                 searchQuery: 'Sonu Nigam best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Sonu_Nigam_%28cropped%29.jpg/440px-Sonu_Nigam_%28cropped%29.jpg'
+                image: '/artists/sonu-nigam.jpg'
             },
             {
+                _id: 'neha-kakkar',
                 name: 'Neha Kakkar',
                 bio: 'The pop queen of Bollywood, known for her peppy and energetic songs.',
                 genre: ['Bollywood', 'Pop', 'Dance'],
@@ -156,9 +169,10 @@ const seedData = async () => {
                 era: '2010s-present',
                 featured: true,
                 searchQuery: 'Neha Kakkar hit songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Neha_Kakkar_at_Indian_Idol_11.jpg/800px-Neha_Kakkar_at_Indian_Idol_11.jpg'
+                image: '/artists/neha-kakkar.jpg'
             },
             {
+                _id: 'atif-aslam',
                 name: 'Atif Aslam',
                 bio: 'Pakistani sensation who has ruled both Bollywood and Lollywood with his unique vocal style.',
                 genre: ['Bollywood', 'Pop', 'Rock'],
@@ -166,9 +180,10 @@ const seedData = async () => {
                 era: '2000s-present',
                 featured: true,
                 searchQuery: 'Atif Aslam hit songs',
-                image: 'https://images.summitmedia-digital.com/cosmo/images/2021/09/27/atif-aslam-bollywood-songs-1632734125.jpg'
+                image: '/artists/atif-aslam.jpg'
             },
             {
+                _id: 'ed-sheeran',
                 name: 'Ed Sheeran',
                 bio: 'British singer-songwriter known for his soulful voice and heartfelt lyrics.',
                 genre: ['Pop', 'Acoustic', 'Folk'],
@@ -176,9 +191,10 @@ const seedData = async () => {
                 era: '2010s-present',
                 featured: true,
                 searchQuery: 'Ed Sheeran greatest hits',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Ed_Sheeran-6886_%28cropped%29.jpg/800px-Ed_Sheeran-6886_%28cropped%29.jpg'
+                image: '/artists/ed-sheeran.jpg'
             },
             {
+                _id: 'the-weeknd',
                 name: 'The Weeknd',
                 bio: 'Canadian singer known for his dark R&B style and chart-topping hits.',
                 genre: ['R&B', 'Pop', 'Electronic'],
@@ -186,7 +202,7 @@ const seedData = async () => {
                 era: '2010s-present',
                 featured: true,
                 searchQuery: 'The Weeknd best songs',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_with_hand_up.jpg/800px-The_Weeknd_with_hand_up.jpg'
+                image: '/artists/the-weeknd.jpg'
             }
         ];
 

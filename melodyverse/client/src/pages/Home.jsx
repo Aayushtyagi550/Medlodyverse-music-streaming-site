@@ -15,24 +15,24 @@ const MOODS = [
 ];
 
 const HERO_ARTISTS_LEFT = [
-    { name: 'Lata Mangeshkar', img: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Lata-Mangeshkar.jpg' },
-    { name: 'Mukesh', img: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Mukesh_Indian_Singer.jpg' },
-    { name: 'Kishore Kumar', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Kishore_Kumar_at_the_premiere_of_the_film_Abhimaan.jpg/800px-Kishore_Kumar_at_the_premiere_of_the_film_Abhimaan.jpg' },
-    { name: 'Mohammed Rafi', img: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Mohammed_Rafi_2016_postcard_of_India_crop-flip.jpg' },
+    { name: 'Lata Mangeshkar', img: '/artists/lata-mangeshkar.jpg' },
+    { name: 'Mukesh', img: '/artists/mukesh.jpg' },
+    { name: 'Kishore Kumar', img: '/artists/kishore-kumar.jpg' },
+    { name: 'Mohammed Rafi', img: '/artists/mohammed-rafi.jpg' },
 ];
 
 const HERO_ARTISTS_RIGHT = [
-    { name: 'Freddie Mercury', img: 'https://upload.wikimedia.org/wikipedia/commons/e/ef/FreddieMercuryNov1977.jpg' },
-    { name: 'Michael Jackson', img: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Michael_Jackson%2C_1988_%2846845017052%29.jpg' },
-    { name: 'Arijit Singh', img: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Arijit_Singh.jpg' },
-    { name: 'The Weeknd', img: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/The_Weeknd_Portrait_by_Brian_Ziff.jpg' },
+    { name: 'Freddie Mercury', img: '/artists/freddie-mercury.jpg' },
+    { name: 'Michael Jackson', img: '/artists/michael-jackson.jpg' },
+    { name: 'Arijit Singh', img: '/artists/arijit-singh.jpg' },
+    { name: 'The Weeknd', img: '/artists/the-weeknd.jpg' },
 ];
 
 const QUICK_PLAYS = [
-    { title: 'Lata Mangeshkar: Golden Hits', query: 'Lata Mangeshkar greatest hits', img: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Lata-Mangeshkar.jpg', views: '1.2M views' },
-    { title: 'Global Pop Icons', query: 'Michael Jackson Freddie Mercury greatest hits', img: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Michael_Jackson%2C_1988_%2846845017052%29.jpg', views: '3.1M views' },
-    { title: 'Bollywood Golden Era', query: 'classical bollywood singers 60s 70s', img: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Mohammed_Rafi_2016_postcard_of_India_crop-flip.jpg', views: '2.4M views' },
-    { title: 'Ed Sheeran: Modern Pop', query: 'Ed Sheeran best pop songs', img: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Ed_Sheeran-6886_%28cropped%29.jpg', views: '850K views' },
+    { title: 'Lata Mangeshkar: Golden Hits', query: 'Lata Mangeshkar greatest hits', img: '/artists/lata-mangeshkar.jpg', views: '1.2M views' },
+    { title: 'Global Pop Icons', query: 'Michael Jackson Freddie Mercury greatest hits', img: '/artists/michael-jackson.jpg', views: '3.1M views' },
+    { title: 'Bollywood Golden Era', query: 'classical bollywood singers 60s 70s', img: '/artists/mohammed-rafi.jpg', views: '2.4M views' },
+    { title: 'Ed Sheeran: Modern Pop', query: 'Ed Sheeran best pop songs', img: '/artists/ed-sheeran.jpg', views: '850K views' },
 ];
 
 const Home = () => {
